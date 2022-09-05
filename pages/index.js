@@ -1,6 +1,6 @@
 import Head from "next/head";
-import Image from "next/image";
-import logo from "../src/assets/SVG/logo.svg";
+
+import Header from "../src/components/Header";
 
 export default function Home() {
   return (
@@ -12,18 +12,8 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
       </div>
-      <main className="p-4">
-        <header>
-          <div className="flex gap-2 items-center">
-            <div className="relative w-[50px] h-[50px]">
-              <Image src={logo} layout="fill" objectFit="cover" />
-            </div>
-            <div className="text-xl font-bold leading-none">
-              <h1>Mark</h1>
-              <h1>Buk</h1>
-            </div>
-          </div>
-        </header>
+      <main>
+        <Header />
       </main>
     </>
   );
