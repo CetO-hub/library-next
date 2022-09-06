@@ -1,8 +1,36 @@
 import Head from "next/head";
-
+import Link from "next/link";
+import Books from "../src/components/Books";
+import { AiOutlineSearch } from "react-icons/ai";
 import Header from "../src/components/Header";
+import { useState } from "react";
 
 export default function Home() {
+  const [books, setBooks] = useState([]);
+  const [searchBook, setSearchBook] = useState([]);
+
+  const bookElement = books.map((book) => {
+    return <Books key={book.key} cover={book.cover_edition_key} />;
+  });
+
+  function handleChange(e) {
+    const { value } = e.target;
+    setSearchBook(value);
+  }
+
+  function handleSubmit() {
+    const url = `http://openlibrary.org/search.json?q=${searchBook}`;
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) {
+          throw Error("Something went wrong");
+        }
+        return res.json();
+      })
+      .then((data) => setBooks(data.docs))
+      .catch((err) => console.log(err));
+  }
+
   return (
     <>
       <div>
@@ -14,6 +42,53 @@ export default function Home() {
       </div>
       <main>
         <Header />
+        <div className="h-[calc(100vh-100px)] w-full flex flex-col justify-center items-start">
+          <h1 className="font-bold text-5xl">Keep track of your books</h1>
+          <p className="text-lg mt-4">
+            Search for books in the library and save it in the matter of seconds
+            temporarily in your browser or long term in your account.
+          </p>
+          <div className="flex mt-4 gap-4">
+            <Link href="/server">
+              <button className="bg-[#75b6d1] hover:opacity-80 px-4 py-2 rounded-full text-lg">
+                Create account
+              </button>
+            </Link>
+            <Link href="/local">
+              <button className="bg-[#75b6d1]/30 hover:opacity-80 px-4 py-2 rounded-full text-lg">
+                Save books
+              </button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Search */}
+        <div className="flex flex-col items-center">
+          <label className="block text-xl font-bold" htmlFor="search">
+            Enter a book title
+          </label>
+          <div className="mt-4 relative">
+            <AiOutlineSearch
+              size={25}
+              className="inline-block absolute top-1 left-2"
+            />
+            <input
+              className="bg-[#d9ebf2] rounded-3xl pl-9 pr-20 py-1 focus:outline-[#337a99] outline-black outline-2 outline-double peer"
+              type="text"
+              id="search"
+              name="book"
+              value={searchBook}
+              onChange={handleChange}
+            />
+            <button
+              onClick={handleSubmit}
+              className="h-full absolute right-2 top-0 border-l-2 border-l-black/50 pl-1 peer-focus:border-l-[#337a99]"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+        {bookElement}
       </main>
     </>
   );

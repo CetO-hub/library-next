@@ -25,19 +25,19 @@ const Header = () => {
               </Link>
             </li>
             <div className="flex justify-between gap-4 items-center text-sm sm:text-lg cursor-pointer mt-4 sm:mt-0">
-              <li className="bg-gray-400/50 sm:bg-white px-4 py-2 rounded-2xl ">
+              <li className="bg-gray-400/25 sm:bg-white px-4 py-2 rounded-2xl ">
                 <Link href="/">
                   <h2>Home</h2>
                 </Link>
               </li>
-              <li className="bg-gray-400/50 sm:bg-white px-4 py-2 rounded-2xl ">
-                <Link href="/local">
-                  <h2>Local storage</h2>
-                </Link>
-              </li>
-              <li className="bg-gray-400/50 sm:bg-white px-4 py-2 rounded-2xl ">
+              <li className="bg-gray-400/25 sm:bg-white px-4 py-2 rounded-2xl ">
                 <Link href="/server">
                   <h2>Server storage</h2>
+                </Link>
+              </li>
+              <li className="bg-gray-400/25 sm:bg-white px-4 py-2 rounded-2xl ">
+                <Link href="/local">
+                  <h2>Local storage</h2>
                 </Link>
               </li>
             </div>
