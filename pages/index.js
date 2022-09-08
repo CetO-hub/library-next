@@ -4,13 +4,25 @@ import Books from "../src/components/Books";
 import { AiOutlineSearch } from "react-icons/ai";
 import Header from "../src/components/Header";
 import { useState } from "react";
+import bookPile from "../src/assets/PNG/book_pile.png";
+import Image from "next/image";
 
 export default function Home() {
   const [books, setBooks] = useState([]);
   const [searchBook, setSearchBook] = useState([]);
 
-  const bookElement = books.map((book) => {
-    return <Books key={book.key} cover={book.cover_edition_key} />;
+  const bookElement = books.docs?.map((book) => {
+    return (
+      <Books
+        key={book.key}
+        cover={book.cover_edition_key}
+        title={book.title}
+        author={
+          Array.isArray(book.author_name) ? book.author_name[0] : "No author"
+        }
+        year={book.first_publish_year}
+      />
+    );
   });
 
   function handleChange(e) {
@@ -27,7 +39,7 @@ export default function Home() {
         }
         return res.json();
       })
-      .then((data) => setBooks(data.docs))
+      .then((data) => setBooks(data))
       .catch((err) => console.log(err));
   }
 
@@ -48,7 +60,7 @@ export default function Home() {
             Search for books in the library and save it in the matter of seconds
             temporarily in your browser or long term in your account.
           </p>
-          <div className="flex mt-4 gap-4">
+          <div className="relative  flex mt-4 gap-4">
             <Link href="/server">
               <button className="bg-[#75b6d1] hover:opacity-80 px-4 py-2 rounded-full text-lg">
                 Create account
@@ -59,6 +71,15 @@ export default function Home() {
                 Save books
               </button>
             </Link>
+            <div className="absolute w-full -bottom-[242px] -right-[159px] -z-10 opacity-30">
+              <Image
+                className="-z-10"
+                src={bookPile}
+                objectFit="contain"
+                height={600}
+                width={400}
+              />
+            </div>
           </div>
         </div>
 
@@ -88,7 +109,12 @@ export default function Home() {
             </button>
           </div>
         </div>
-        {bookElement}
+        <div className="grid grid-cols-3 gap-2 mt-4 ">{bookElement}</div>
+        {books.start <= books.num_found ? (
+          <div className="mt-4 w-full mx-auto text-center">Next</div>
+        ) : (
+          ""
+        )}
       </main>
     </>
   );
