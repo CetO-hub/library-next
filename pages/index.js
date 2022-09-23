@@ -10,6 +10,7 @@ import Image from "next/image";
 export default function Home() {
   const [books, setBooks] = useState([]);
   const [searchBook, setSearchBook] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const bookElement = books.docs?.map((book) => {
     return (
@@ -37,9 +38,13 @@ export default function Home() {
         if (!res.ok) {
           throw Error("Something went wrong");
         }
+        setIsLoading(true);
         return res.json();
       })
-      .then((data) => setBooks(data))
+      .then((data) => {
+        setBooks(data);
+        setIsLoading(false);
+      })
       .catch((err) => console.log(err));
   }
 
@@ -54,7 +59,7 @@ export default function Home() {
       </div>
       <main>
         <Header />
-        <div className="h-[calc(100vh-100px)] w-full flex flex-col justify-center items-start">
+        <div className="h-[calc(100vh-100px)] w-full flex flex-col justify-start mt-20 items-start">
           <h1 className="font-bold text-5xl">Keep track of your books</h1>
           <p className="text-lg mt-4">
             Search for books in the library and save it in the matter of seconds
@@ -109,6 +114,14 @@ export default function Home() {
             </button>
           </div>
         </div>
+        {isLoading && (
+          <div className="z-10 fixed left-0 top-0 w-screen h-screen bg-black/60 flex justify-center items-center text-lg font-bold text-white">
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full border-4 border-t-black/40 animate-spin"></div>
+              <div className="mt-4">Loading</div>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-3 gap-2 mt-4 ">{bookElement}</div>
         {books.start <= books.num_found ? (
           <div className="mt-4 w-full mx-auto text-center">Next</div>

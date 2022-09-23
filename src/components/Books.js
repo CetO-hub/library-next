@@ -25,7 +25,11 @@ const Books = (props) => {
           )}
         </div>
         <div className="text-sm w-full text-center self-start mt-2">
-          <h1 className="font-bold">{props.title}</h1>
+          <h1 className="font-bold">
+            {props.title.length < 30
+              ? props.title
+              : props.title.slice(0, 30) + "..."}
+          </h1>
         </div>
         <div className="flex text-center flex-col self-end">
           <p className="">{props.author}</p>
