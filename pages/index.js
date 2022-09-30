@@ -3,25 +3,37 @@ import Link from "next/link";
 import Books from "../src/components/Books";
 import { AiOutlineSearch } from "react-icons/ai";
 import Header from "../src/components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import bookPile from "../src/assets/PNG/book_pile.png";
 import Image from "next/image";
+import local from "./local";
 
 export default function Home() {
   const [books, setBooks] = useState([]);
   const [searchBook, setSearchBook] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [localList, setLocalList] = useState(
+    JSON.parse(localStorage.getItem("books")) || []
+  );
+  const [serverList, setServerList] = useState([]);
+
+  useEffect(() => {
+    localStorage.setItem("books", JSON.stringify(localList));
+  }, [localList]);
 
   const bookElement = books.docs?.map((book) => {
     return (
       <Books
         key={book.key}
+        id={book.key}
         cover={book.cover_edition_key}
         title={book.title}
         author={
           Array.isArray(book.author_name) ? book.author_name[0] : "No author"
         }
         year={book.first_publish_year}
+        saveLocal={saveLocal}
+        saveServer={saveServer}
       />
     );
   });
@@ -47,6 +59,20 @@ export default function Home() {
       })
       .catch((err) => console.log(err));
   }
+
+  function saveLocal(id) {
+    const book = books.docs.find((item) => item.key === id);
+    console.log(book);
+    setLocalList((oldState) => {
+      return [...oldState, book];
+    });
+  }
+
+  function saveServer(id) {
+    console.log(id);
+  }
+
+  console.log(localList);
 
   return (
     <>
@@ -88,7 +114,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Search */}
+        {/* search */}
         <div className="flex flex-col items-center">
           <label className="block text-xl font-bold" htmlFor="search">
             Enter a book title
@@ -114,6 +140,8 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        {/* display */}
         {isLoading && (
           <div className="z-10 fixed left-0 top-0 w-screen h-screen bg-black/60 flex justify-center items-center text-lg font-bold text-white">
             <div className="flex flex-col items-center">
