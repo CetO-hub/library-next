@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../src/components/Header";
 
-import Books from "../src/components/Books";
+import BooksLocal from "../src/components/BooksLocal";
 
 const local = () => {
-  const bookList = JSON.parse(localStorage.getItem("books"));
+  const [bookList, setBookList] = useState(
+    JSON.parse(localStorage.getItem("books")) || []
+  );
+
+  useEffect(() => {
+    localStorage.setItem("books", JSON.stringify(bookList));
+  }, [bookList]);
+
+  function removeBook(id) {
+    const book = bookList.filter((item) => item.key !== id);
+    setBookList(book);
+  }
 
   const bookElement = bookList.map((book) => {
     return (
-      <Books
+      <BooksLocal
         key={book.key}
         id={book.key}
         cover={book.cover_edition_key}
@@ -17,6 +28,7 @@ const local = () => {
           Array.isArray(book.author_name) ? book.author_name[0] : "No author"
         }
         year={book.first_publish_year}
+        removeBook={removeBook}
       />
     );
   });
@@ -26,7 +38,7 @@ const local = () => {
       <main>
         <Header />
 
-        {bookElement}
+        <div className="grid grid-cols-3 gap-2 mt-4 ">{bookElement}</div>
       </main>
     </>
   );

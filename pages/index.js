@@ -15,7 +15,6 @@ export default function Home() {
   const [localList, setLocalList] = useState(
     JSON.parse(localStorage.getItem("books")) || []
   );
-  const [serverList, setServerList] = useState([]);
 
   useEffect(() => {
     localStorage.setItem("books", JSON.stringify(localList));
@@ -33,7 +32,6 @@ export default function Home() {
         }
         year={book.first_publish_year}
         saveLocal={saveLocal}
-        saveServer={saveServer}
       />
     );
   });
@@ -61,18 +59,13 @@ export default function Home() {
   }
 
   function saveLocal(id) {
-    const book = books.docs.find((item) => item.key === id);
-    console.log(book);
-    setLocalList((oldState) => {
-      return [...oldState, book];
-    });
+    if (!localList.find((item) => item.key === id)) {
+      const book = books.docs.find((item) => item.key === id);
+      setLocalList((oldState) => {
+        return [...oldState, book];
+      });
+    }
   }
-
-  function saveServer(id) {
-    console.log(id);
-  }
-
-  console.log(localList);
 
   return (
     <>
@@ -85,7 +78,7 @@ export default function Home() {
       </div>
       <main>
         <Header />
-        <div className="h-[calc(100vh-100px)] w-full flex flex-col justify-start mt-20 items-start">
+        <div className="h-full w-full flex flex-col justify-start mt-20 items-start">
           <h1 className="font-bold text-5xl">Keep track of your books</h1>
           <p className="text-lg mt-4">
             Search for books in the library and save it in the matter of seconds
@@ -115,7 +108,7 @@ export default function Home() {
         </div>
 
         {/* search */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-20">
           <label className="block text-xl font-bold" htmlFor="search">
             Enter a book title
           </label>
